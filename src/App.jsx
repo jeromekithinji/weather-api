@@ -1,5 +1,7 @@
 import "./App.css";
-import ToDoList from "./components/ToDoList/ToDoList";
+// import ToDoList from "./components/ToDoList/ToDoList";
+import ToDoList from "./components/TodoList1/ToDoList";
+
 import WeatherInfo from "./components/WeatherInfo/WeatherInfo";
 
 function App() {
