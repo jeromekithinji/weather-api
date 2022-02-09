@@ -1,152 +1,118 @@
-import React from "react";
-import "./ToDoList.scss";
-import Dustbin from '../../assets/images/bin.svg';
+import React, { useState, useEffect } from "react";
+import "./ToDolist.scss";
+import { v4 as uuidv4 } from "uuid";
+
 
 const ToDoList = () => {
 
-    const taskList = document.querySelector(".inbox");
-    const addTaskButton = document.querySelector(".add-new")
+    const intialState = JSON.parse(localStorage.getItem("todos")) || [];
+    const [input, setInput] = useState("");
+    const [todos, setTodos] = useState(intialState);
+    const [editTodo, setEditTodo] = useState(null);
 
-    // const newTask = addTaskButton.addEventListener("click", (event) => {
-    //     taskList.append("<div className='item'><input type='checkbox'/><p className='text' contentEditable='true'>This is an inbox layout.</p><img className='dustbin' src={Dustbin} alt='image of bin' /></div>");
-    // })
+    useEffect(() => {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }, [todos]);
 
-    const newTask = () => {
-        console.log("works")
-        taskList.innerHTML += (
-            `<div className="item">
-                <input type="checkbox" />
-                <p className="text" contentEditable="true">Feed dog</p>
-                <img className="dustbin" src={Dustbin} alt="Dustbin" />
-            </div>`
+    useEffect(() => {
+        if (editTodo) {
+            setInput (editTodo.title);
+        } else {
+            setInput ("");
+        }
+    }, [setInput, editTodo]);
+
+    const onInputChange = (event) => {
+        setInput(event.target.value);
+    };
+
+    const onFormSubmit = (event) => {
+        event.preventDefault();
+        if(!editTodo) {
+            setTodos([...todos, { id: uuidv4(), title: input, completed: false }]);
+            setInput ("");
+        } else {
+            updateTodo(input, editTodo.id, editTodo.completed)
+        }
+    };
+
+    const handleDelete = ({ id }) => {
+        setTodos(todos.filter((todo) => todo.id !== id));
+    }
+
+    const handleComplete = (todo) => {
+        setTodos(
+            todos.map((item) => {
+                if(item.id === todo.id) {
+                    return {...item, completed: !item.completed}
+                }
+                return item;
+            })
         );
-        store();
     }
 
-    let totalTasks = 0;
-    let checkboxes = 0;
-    const getTotalTasks = () => {
-        totalTasks = taskList.getElementsByTagName("div").length;
-        checkboxes = taskList.getElementsByTagName("input").length;
-        console.log(totalTasks);
-        console.log(checkboxes);
-        // return totalTasks;
+    const updateTodo = (title, id ,completed) => {
+        const newTodo = todos.map((todo) => 
+            todo.id === id ? { title, id, completed } : todo
+        );
+        setTodos(newTodo);
+        setEditTodo("");
     }
 
-    let remainingTasks = 0;
-    const getRemainingTasks = () => {
-        remainingTasks = taskList.getElementsByTagName("div").length;
-        console.log(remainingTasks);
-        return remainingTasks;
+    const handleEdit = ({id}) => { 
+        const findTodo = todos.find((todo) => todo.id === id);
+        setEditTodo(findTodo);
     }
-
-    let completedTasks = 0;
-    const getCompletedTasks = () => {
-        // allTasks = taskList.getElementsByTagName("div").length;
-        console.log(completedTasks);
-        return completedTasks;
-    }
-
-    const store = () => {
-        window.localStorage.myitems = taskList.innerHTML;
-    }
-
-    // const getValues = () => {
-    //     const storedValues = window.localStorage.myitems;
-    //     if(!storedValues) {
-    //         taskList.innerHTML = (`<div className="item">
-    //         <input type="checkbox" />
-    //         <p className="text" contentEditable="true">Feed dog</p>
-    //         <img className="dustbin" src={Dustbin} alt="Dustbin" />
-    //     </div>` +
-    //     `<div className="item">
-    //         <input type="checkbox" />
-    //         <p className="text" contentEditable="true">Do homework</p>
-    //         <img className="dustbin" src={Dustbin} alt="Dustbin" />
-    //     </div>` +
-    //     `<div className="item">
-    //         <input type="checkbox" />
-    //         <p className="text" contentEditable="true">Go to gym</p>
-    //         <img className="dustbin" src={Dustbin} alt="Dustbin" />
-    //     </div>` +
-    //     `<div className="item">
-    //         <input type="checkbox" />
-    //         <p className="text" contentEditable="true">Finish cleaning</p>
-    //         <img className="dustbin" src={Dustbin} alt="Dustbin" />
-    //     </div>`)
-    //     }
-    //     else {
-    //         taskList.innerHTML = storedValues;
-    //     }
-    //   }
-    
-    //   getValues();
-
 
 
 
     return (
-        <div className="wrapper">
-            <div className="align">
-                <div className="app">
-                    <div className="info">
-                        <div className="info-bottom">
-                            <div className="left">
-                                <p id="count">{getTotalTasks}</p>
-                                <p id="tasks">Total</p>
-                            </div>
-                            <div className="middle">
-                                <p id="remaining_done">5</p>
-                                <p id="remaining_tasks">Remaining</p>
-                            </div>
-                            <div className="right">
-                                <p id="count_done">2</p>
-                                <p id="tasks_done">Done</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p id="allTasks">
-                        <strong>Tasks</strong> for today
-                    </p>
-                    <div className="inbox">
-                        <div className="item">
-                            <input type="checkbox" />
-                            <p className="text" contentEditable="true">Feed dog</p>
-                            <img className="dustbin" src={Dustbin} alt="Dustbin" />
-                        </div>
-                        <div className="item">
-                            <input type="checkbox" />
-                            <p className="text" contentEditable="true">Do homework</p>
-                            <img className="dustbin" src={Dustbin} alt="Dustbin" />
-                        </div>
-                        <div className="item">
-                            <input type="checkbox" />
-                            <p className="text" contentEditable="true">Go to gym</p>
-                            <img className="dustbin" src={Dustbin} alt="Dustbin" />
-                        </div>
-                        <div className="item">
-                            <input type="checkbox" />
-                            <p className="text" contentEditable="true">Finish cleaning</p>
-                            <img className="dustbin" src={Dustbin} alt="Dustbin" />
-                        </div>
-                        <div className="item">
-                            <input type="checkbox" />
-                            <p className="text" contentEditable="true">Pick up car</p>
-                            <img className="dustbin" src={Dustbin} alt="Dustbin" />
-                        </div>
-                        <div className="item">
-                            <input type="checkbox" />
-                            <p className="text" contentEditable="true">Schedule appointment </p>
-                            <img className="dustbin" src={Dustbin} alt="Dustbin" />
-                        </div>
-                    </div>
-                    <div className="bottom">
-                        <button onClick={newTask} className="add-new">Add new task</button>
-                    </div>
+        <div className="container">
+            <div className="app-wrapper">
+                <div>
+                    <h1 className="header">To-do List</h1>
                 </div>
-            </div>
+                <div>
+                    <form onSubmit={onFormSubmit}>
+                        <input type="text" 
+                        className="task-input" 
+                        placeholder="Enter a Todo..."
+                        value={input}
+                        required
+                        onChange={onInputChange}
+                        />
+                        <button className="button-add" id="button-add" type="submit" 
+                        onClick={onFormSubmit}>
+                        {editTodo ? "OK" : "Add"}
+                        </button>
+                    </form>
+                </div>
+                <div>
+                    {todos.map((todo) => (
+                        <li className="list-item" key={todo.id}>
+                            <input 
+                                type="text" 
+                                value={todo.title} 
+                                // className="list" 
+                                className={`list ${todo.completed ? "complete" : ""}`}
+                                onChange={(event) => event.preventDefault()} 
+                            />
+                            <div>
+                                <button className="button-complete task-button" onClick={() => handleComplete(todo)}>
+                                    <i className="fa fa-check-circle"></i>
+                                </button>
+                                <button className="button-edit task-button" onClick={() => handleEdit(todo)}>
+                                    <i className="fa fa-edit"></i>
+                                </button>
+                                <button className="button-delete task-button" onClick={() => handleDelete(todo)}>
+                                    <i className="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                    ))}
+                </div>  
+            </div> 
         </div>
-    );
-};
+)};
 
 export default ToDoList;

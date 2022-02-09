@@ -1,38 +1,40 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+  }
+  
+  html {
+    /* font-size: 32px; */
+    font-family: "Poppins", sans-serif;
+    color: #ffffff;
+  }
+  
+  /* body {
+    max-width: 1232px;
+    margin: 0 auto;
+    padding: 0 32px;
+    background-color: #002f6c;
+    border: solid white;
+    border-width: thin;
+    overflow:hidden;
+    display:block;
+  } */
+
 .App {
-  text-align: center;
+  /* text-align: center; */
+  /* width: 50vw; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.todoList {
+    margin-top: 40px;
+    justify-content: left;
 }
